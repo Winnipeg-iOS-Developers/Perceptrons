@@ -1,4 +1,5 @@
-import Foundation
+import UIKit
+import PlaygroundSupport
 
 struct Perceptron {
     
@@ -134,9 +135,7 @@ struct ArtificialNeuralNetwork {
         }
     }
     
-    func verify() -> Int {
-        // TODO: Add draw code.
-        
+    func verify(andDrawIn graphView: GraphView? = nil) -> Int {
         var correctAnswers = 0
         
         for _ in 1...100 {
@@ -152,7 +151,11 @@ struct ArtificialNeuralNetwork {
             if result == self.isAboveLine(inputs: inputs) {
                 correctAnswers += 1
             }
+            
+            graphView?.drawPoint(from: inputs, as: result)
         }
+        
+        graphView?.drawLinearFunction(a: self.a, b: self.b)
         
         return correctAnswers
     }
@@ -167,10 +170,9 @@ var artificialNeuralNetwork = ArtificialNeuralNetwork(
 
 // Train the network. Try changing `numberOfIterations` and `learningRate`.
 artificialNeuralNetwork.train(
-    numberOfIterations: 1,
+    numberOfIterations: 1000,
     learningRate: 0.1 // Allowed range: 0 < learningRate <= 1.
 )
-
 
 // Measure the accuracy of the network.
 for iteration in 1...100 {
@@ -186,5 +188,15 @@ for iteration in 1...100 {
         successRate = artificialNeuralNetwork.verify()
     }
     
+    // Select rectangle "Result" icon in right gutter to show graph of successRates.
     successRate
 }
+
+// Draw in timelime for demonstration purposes. Make sure to show timeline view in Assistant editor.
+let frame = CGRect(x: 0, y: 0, width: 300, height: 300)
+let graphView = GraphView(frame: frame)
+
+artificialNeuralNetwork.verify(andDrawIn: graphView)
+
+
+PlaygroundPage.current.liveView = graphView
